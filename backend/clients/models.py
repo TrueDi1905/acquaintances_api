@@ -34,3 +34,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class Like(models.Model):
+    client = models.ForeignKey(User, on_delete=models.CASCADE,
+                             related_name="client")
+    client_like = models.ForeignKey(User, on_delete=models.CASCADE,
+                               related_name="client_like")
+    constraints = [
+        models.UniqueConstraint(
+            fields=['client', 'client_like'],
+            name='unique_follow',
+        ),
+    ]

@@ -24,7 +24,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
                 'Email уже занят')
         return data
 
-    
+    def validate(self, data):
+        print(type(data['avatar']))
+        return data
+
+
 class CustomAuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
         label=("email"),
@@ -45,10 +49,6 @@ class CustomAuthTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         email = attrs.get('email')
         password = attrs.get('password')
-
-        if User.objects.filter(email=email).exists():
-            raise serializers.ValidationError(
-                'Email уже занят')
 
         if email and password:
             user = authenticate(request=self.context.get('request'),
