@@ -9,5 +9,5 @@ router.register(r'(?P<client_id>[\d]+)/match', views.MatchViewSet, basename='mat
 urlpatterns = [
     path('', include(router.urls)),
     path('auth/', views.CustomObtainAuthToken.as_view(), name='auth'),
-
+    path('list/', views.ListViewSet.as_view({'get': 'list'}), name='list')
 ]

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.authtoken.views import ObtainAuthToken
 from .models import User, Like
 from rest_framework import status, viewsets
@@ -68,14 +69,8 @@ class MatchViewSet(mixins.ListModelMixin,
 
 
 class ListViewSet(mixins.ListModelMixin,
-                   viewsets.GenericViewSet):
+                  viewsets.GenericViewSet):
     queryset = User.objects.all()
-
-    def list(self, request, *args, **kwargs):
-        user = request.user
-        distance = self.kwargs.get('distance')
-        users = []
-        for dist in self.queryset:
-            if calc_dist(user.lat, user.lon, dist.lat, dist.lon) == distance:
-                users.append(dist)
-
+    serializer_class = CustomUserSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('first_name', 'last_name', 'sex')
