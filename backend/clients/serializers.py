@@ -6,7 +6,7 @@ from .models import User
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    avatar = Base64ImageField()
+    avatar = Base64ImageField(max_length=None, use_url=True)
     sex = serializers.ChoiceField(choices=[0, 1])
     first_name = serializers.CharField(max_length=30)
     last_name = serializers.CharField(max_length=150)
@@ -18,14 +18,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = User
 
     def validate_email(self, data):
-        print(data)
         if User.objects.filter(email=data).exists():
             raise serializers.ValidationError(
                 'Email уже занят')
-        return data
-
-    def validate(self, data):
-        print(type(data['avatar']))
         return data
 
 
@@ -44,7 +39,6 @@ class CustomAuthTokenSerializer(serializers.Serializer):
         label=("Token"),
         read_only=True
     )
-
 
     def validate(self, attrs):
         email = attrs.get('email')

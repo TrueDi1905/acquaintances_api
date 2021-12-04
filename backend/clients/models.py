@@ -22,6 +22,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True)
     is_active = models.BooleanField(_('active'), default=True)
     is_staff = models.BooleanField(default=False)
+    lon = models.FloatField(default=59.9386)
+    lat = models.FloatField(default=30.3141)
+
 
     objects = UserManager()
 

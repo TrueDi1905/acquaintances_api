@@ -10,7 +10,7 @@ from .serializers import CustomUserSerializer, CustomAuthTokenSerializer
 
 from rest_framework import mixins
 
-from .systems import send
+from .systems import send, add_watermark, calc_dist
 
 
 class UserViewSet(mixins.CreateModelMixin,
@@ -18,7 +18,6 @@ class UserViewSet(mixins.CreateModelMixin,
 
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
-
     permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
@@ -29,6 +28,8 @@ class UserViewSet(mixins.CreateModelMixin,
         email = serializer.data['email']
         user = User.objects.get(email=email)
         user.set_password(password)
+        avatar = add_watermark(user.avatar)
+        user.avatar = avatar
         user.save()
         serializer = CustomUserSerializer(user)
         headers = self.get_success_headers(serializer.data)
@@ -64,3 +65,17 @@ class MatchViewSet(mixins.ListModelMixin,
             send(client, like_client)
             send(like_client, client)
         return Response(status=status.HTTP_201_CREATED)
+
+
+class ListViewSet(mixins.ListModelMixin,
+                   viewsets.GenericViewSet):
+    queryset = User.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        user = request.user
+        distance = self.kwargs.get('distance')
+        users = []
+        for dist in self.queryset:
+            if calc_dist(user.lat, user.lon, dist.lat, dist.lon) == distance:
+                users.append(dist)
+
