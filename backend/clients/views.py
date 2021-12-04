@@ -61,7 +61,7 @@ class MatchViewSet(mixins.ListModelMixin,
                                client_like=client).exists():
             send(client, like_client)
             send(like_client, client)
-        return Response({'Like': 'Лайк успешно отправлен'}, status=status.HTTP_201_CREATED)
+        return Response({'Like': 'Лайк успешно отправлен!'}, status=status.HTTP_201_CREATED)
 
 
 class ListViewSet(mixins.ListModelMixin,
