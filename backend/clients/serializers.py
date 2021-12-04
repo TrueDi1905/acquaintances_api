@@ -14,7 +14,8 @@ class CustomUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=128, min_length=1)
 
     class Meta:
-        fields = ('avatar', 'sex', 'first_name', 'last_name', 'email', 'password')
+        fields = ('avatar', 'sex', 'first_name',
+                  'last_name', 'email', 'password')
         model = User
 
     def validate_email(self, data):
@@ -22,6 +23,18 @@ class CustomUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'Email уже занят')
         return data
+
+
+class CustomUserGetSerializer(serializers.ModelSerializer):
+    avatar = Base64ImageField(max_length=None, use_url=True)
+    sex = serializers.ChoiceField(choices=[0, 1])
+    first_name = serializers.CharField(max_length=30)
+    last_name = serializers.CharField(max_length=150)
+    email = serializers.EmailField(min_length=5)
+
+    class Meta:
+        fields = ('sex', 'first_name', 'last_name', 'email', 'avatar')
+        model = User
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):

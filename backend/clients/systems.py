@@ -1,9 +1,7 @@
-import base64
+from math import acos, cos, degrees, radians, sin
 
-from PIL import Image
 from django.core.mail import send_mail
-
-from math import sin, cos, radians, degrees, acos
+from PIL import Image
 
 
 def calc_dist(lat_a, long_a, lat_b, long_b):
@@ -12,7 +10,7 @@ def calc_dist(lat_a, long_a, lat_b, long_b):
     long_diff = radians(long_a - long_b)
     distance = (sin(lat_a) * sin(lat_b) +
                 cos(lat_a) * cos(lat_b) * cos(long_diff))
-    return degrees(acos(distance)) * 69.09
+    return int(degrees(acos(distance)) * 69.09)
 
 
 def add_watermark(input_image_path):
@@ -20,9 +18,6 @@ def add_watermark(input_image_path):
     watermark = Image.open('watermark.jpg')
     base_image.paste(watermark, (0, 0))
     base_image.save(str(input_image_path))
-    with open(str(input_image_path), 'rb') as file:
-        picture = base64.b64encode(file.read()).decode()
-    return picture
 
 
 def send(client, like_client):
